@@ -82,7 +82,7 @@ namespace ConsoleApp1
     {//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /*a. выводит всё содержимое класса в текстовый файл (принимает
 в качестве параметра имя класса);*/
-        public static void MethodOne<T>(T obj) where T : class
+        public static void MethodA<T>(T obj) where T : class
         {
             FileStream file = new FileStream("D:\\file.txt", FileMode.Create);//FileMode-каким образом будет откр файл
             StreamWriter writer = new StreamWriter(file);
@@ -113,7 +113,7 @@ namespace ConsoleApp1
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /*b. извлекает все общедоступные публичные методы класса
 (принимает в качестве параметра имя класса);*/
-        public static void MethodTwo<T>(T obj) where T : class
+        public static void MethodB<T>(T obj) where T : class
         {
             Type t = typeof(T);//получить информацию о типе
            // var MArr = t.GetMethods();///методы типа в виде массива объектов MethodInfo
@@ -125,7 +125,7 @@ namespace ConsoleApp1
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /*получает информацию о полях и свойствах класса;*/
-        public static void MethodThree<T>(T obj) where T : class
+        public static void MethodC<T>(T obj) where T : class
         {
             Type t = typeof(T);//получить информацию о типе
             //GetFields();//поля данного типа в виде массива объектов FieldInfo
@@ -142,7 +142,7 @@ namespace ConsoleApp1
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         /*получает все реализованные классом интерфейсы;*/
-        public static void MethodFour<T>(T obj) where T : class
+        public static void MethodD<T>(T obj) where T : class
         {
             Type t = typeof(T);//получить информацию о типе
             //GetInterfaces();//реализуемые данным типом интерфейсы в виде массива объектов Type
@@ -156,7 +156,7 @@ namespace ConsoleApp1
         /*выводит по имени класса имена методов, которые содержат
 заданный (пользователем) тип параметра (имя класса
 передается в качестве аргумента);*/
-        public static void MethodTwoDOP<T>(T obj, string mth) where T : class
+        public static void MethodE<T>(T obj, string mth) where T : class
         {
             Type t = typeof(T);//получить информацию о типе
             MethodInfo[] MArr = t.GetMethods();//методы типа в виде массива объектов MethodInfo
@@ -175,7 +175,20 @@ namespace ConsoleApp1
             }
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+        /*вызывает некоторый метод класса, при этом значения для его
+параметров необходимо прочитать из текстового файла (имя
+класса и имя метода передаются в качестве аргументов).*/
+        public static void MethodF<T>(T obj, string mth) where T : class
+        {
+            Console.WriteLine("Читаем из файла параметр и передаем его в метод!");
+            FileStream file2 = new FileStream("D:\\tut.txt", FileMode.Open);//создали файл 
+            StreamReader reader = new StreamReader(file2);//читаем из файла
+            object[] Arro = { reader.ReadLine() };//помещаем в обьект то что на файле(в нашем случае это параметры методов)
+            Type t = typeof(T);//получаем информацию о типе
+            MethodInfo metod = t.GetMethod(mth);//методы типа в виде массива объектов MethodInfo(определенный)
+            object mval = metod.Invoke(obj, Arro);//вызов метода(обьект, параметры)
+            Console.WriteLine(mval);//выводим
+        }
 
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,16 +197,17 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             MyTestClass myTestClass = new MyTestClass(12.2, 13.3);
-            Reflect.MethodOne<MyTestClass>(myTestClass);
-            Reflect.MethodTwo<MyTestClass>(myTestClass);
-            Reflect.MethodThree<MyTestClass>(myTestClass);
-            Reflect.MethodFour<MyTestClass>(myTestClass);
+            Reflect.MethodA<MyTestClass>(myTestClass);
+            Reflect.MethodB<MyTestClass>(myTestClass);
+            Reflect.MethodC<MyTestClass>(myTestClass);
+            Reflect.MethodD<MyTestClass>(myTestClass);
 
             string s;
             Console.WriteLine("Введите тип аргумента(Double, Int32): ");
             s = Console.ReadLine();
-            Reflect.MethodTwoDOP<MyTestClass>(myTestClass, s);
-         
+            Reflect.MethodE<MyTestClass>(myTestClass, s);
+            Reflect.MethodF<MyTestClass>(myTestClass, "ToConsole");
+
 
         }
     }
@@ -208,3 +222,8 @@ namespace ConsoleApp1
 
 /*  определяем тип, создаем обьект класса MethodInfo, и туда помещаем все методы нашего типа 
   */
+
+
+/*  Console.WriteLine("-------------POSLEDNNIY");
+        Student first = new Student("1", "Dowr", 30, "Central", "375", "FIT", 2, 4);
+        Reflect.MethodTwo<Student>(first);*/
